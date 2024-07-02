@@ -4,7 +4,7 @@ import SubTableItem from "@/Components/AdminComponents/SubTableItem";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const page = () => {
+const Subscription = () => {
   const [emails, setEmails] = useState([]);
 
   const fetchEmails = async () => {
@@ -67,4 +67,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Subscription;
