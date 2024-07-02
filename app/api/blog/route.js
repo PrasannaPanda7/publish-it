@@ -4,6 +4,9 @@ const { NextResponse } = require("next/server");
 import { writeFile, unlink } from "fs/promises";
 import { Buffer } from "buffer";
 import BlogModel from "@/lib/models/BlogModel";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const LoadDB = async () => {
   await ConnectDB();
