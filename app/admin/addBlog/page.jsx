@@ -4,9 +4,12 @@ import axios from "axios";
 import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { imageDB } from "@/lib/config/firebaseConfig";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const AddBlog = () => {
   const [image, setImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState(false);
   const [data, setData] = useState({
     title: "",
     description: "",
@@ -20,15 +23,27 @@ const AddBlog = () => {
     setData((data) => ({ ...data, [name]: value }));
   };
 
+  const onImageChange = (e) => {
+    setImage(e.target.files[0]);
+    setImageUrl(
+      (e.target.files[0] && URL.createObjectURL(e.target.files[0])) || false
+    );
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    const filePath = `files/${Date.now()}`;
+    const imgRef = ref(imageDB, filePath);
+    const refInDb = await uploadBytes(imgRef, image);
+    const imgUrl = await getDownloadURL(refInDb.ref);
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("category", data.category);
     formData.append("author", data.author);
     formData.append("authorImg", data.authorImg);
-    formData.append("image", image);
+    formData.append("imgUrl", imgUrl);
+    formData.append("filePath", filePath);
     const resp = await axios.post(`/api/blog`, formData);
     if (resp.data.success) {
       toast.success(resp.data.msg);
@@ -51,7 +66,7 @@ const AddBlog = () => {
         <p className="text-xl">Upload thumbnail</p>
         <label htmlFor="image">
           <Image
-            src={!image ? assets.upload_area : URL.createObjectURL(image)}
+            src={!image && !imageUrl ? assets.upload_area : imageUrl}
             className="mt-4"
             width={140}
             height={70}
@@ -59,7 +74,7 @@ const AddBlog = () => {
           />
         </label>
         <input
-          onChange={(e) => setImage(e.target.files[0])}
+          onChange={onImageChange}
           type="file"
           hidden
           required
