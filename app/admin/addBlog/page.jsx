@@ -55,6 +55,7 @@ const AddBlog = () => {
         author: "Alex Bennett",
         authorImg: "/author_img.png",
       });
+      setImageUrl(false);
     } else {
       toast.error("Error");
     }
