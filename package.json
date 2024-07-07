@@ -2,9 +2,11 @@
   "name": "next-blogapp",
   "version": "0.1.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "prebuild": "npx tailwindcss -i ./src/app/globals.css -o ./src/app/globals.css",
     "start": "next start",
     "lint": "next lint"
   },
