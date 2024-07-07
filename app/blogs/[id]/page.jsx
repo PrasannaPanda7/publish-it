@@ -45,7 +45,9 @@ const BlogPage = ({ params }) => {
             width={60}
             height={60}
           />
-          <p className="mt-1 pb-2 text-lg max-w-[740px]">{data.author}</p>
+          <p className="mt-1 pb-2 mx-auto text-lg max-w-[740px]">
+            {data.author}
+          </p>
         </div>
       </div>
       <div className="mx-5 max-w-[800px] md:mx-auto mt-[-100px] mb-10">
