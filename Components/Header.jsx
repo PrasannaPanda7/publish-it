@@ -3,9 +3,12 @@ import axios from "axios";
 import Image from "next/image";
 import React, { useRef } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const emailRef = useRef();
+  const router = useRouter();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     submitEmail(emailRef.current.value);
@@ -17,16 +20,22 @@ function Header() {
       email: email,
     };
     formData.append("email", email);
-    const {
-      data: { success, msg },
-    } = await axios.post("/api/email", JSON.stringify(postData));
-    if (success) {
-      toast.success(msg);
-      emailRef.current.value = "";
-    } else {
-      toast.error("Error");
+    try {
+      const {
+        data: { success, msg },
+      } = await axios.post("/api/email", JSON.stringify(postData));
+      if (success) {
+        toast.success(msg);
+        emailRef.current.value = "";
+        router.push("/admin"); // Navigate to /admin on success
+      } else {
+        toast.error("Error");
+      }
+    } catch (error) {
+      toast.error("An error occurred while submitting the email.");
     }
   };
+
   return (
     <div className="px-5 py-5 md:px-12 lg:px-28">
       <div className="flex justify-between items-center">
@@ -36,7 +45,10 @@ function Header() {
           alt=""
           className="w-[130px] sm:w-auto"
         />
-        <button className="flex items-center font-medium gap-2 py-1 px-3 sm:py-3 sm:px-6 border border-solid border-black shadow-[-7px_7px_0px_#000000]">
+        <button
+          className="flex items-center font-medium gap-2 py-1 px-3 sm:py-3 sm:px-6 border border-solid border-black shadow-[-7px_7px_0px_#000000]"
+          onClick={() => router.push("/admin")} // Navigate to /admin when clicking "Get Started"
+        >
           Get Started
           <Image src={assets.arrow} alt="" />
         </button>
